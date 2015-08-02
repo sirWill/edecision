@@ -1,16 +1,119 @@
 <!DOCTYPE html>
-<html ng-app="easyDecision">
+<html ng-app="eDecision">
 <head>
-  <meta charset="utf8"/>
-  <title>Super Easy Decision</title>
-  <link rel="stylesheet" href="/theme.css">
-  <link rel="stylesheet" href="/all.css">
+	<meta charset="utf8"/>
+	<title>Очень легкое решение</title>
+	<link rel="stylesheet" href="theme.css">
+	<link rel="stylesheet" href="all.css">
 </head>
-<body>
+<body ng-controller="DecisionCtrl as dc" class="{{dc.bodyClass()}}">
+<p></p>
+<div class="container">
+	
+	<div class="col-md-2 col-md-offset-5" ng-hide="dc.decision">
+		<button class="btn btn-lg btn-success" ng-click="dc.new()">Новое решение</button>
+	</div>
+
+		
+	<div class="row" ng-cloak>
+		<div class="col-md-6 col-md-offset-3 text-center" ng-show="dc.decision.new">
+			
+			<div class="form-group">
+		    <label for="decisionName">Что будем решать?</label>
+				<input type="text" class="form-control" id="decisionName" ng-model="dc.decision.title">
+		  </div>
+			<button class="btn btn-success" ng-disabled="dc.decision.title.length == 0" ng-click="dc.decision.new = false;">Создать</button>
+			<button class="btn btn-primary" ng-click="dc.rem()">Отменить</button>
+		
+		</div>
+
+		<div class="text-center" ng-hide="dc.decision.new || !dc.decision" ng-cloak>
+			<div class="col-md-2 result-text">
+				<h2>
+					{{ dc.decision.pros | result : dc.decision.cons | number:2 }}
+				</h2>
+			</div>
+			<div class="col-md-8">
+				<h2>{{dc.decision.title}}</h2>
+			</div>
+			<div class="col-md-2">
+				<button class="btn btn-default btn-pc" ng-click="dc.rem()">Начать сначала</button>
+			</div>
+		</div>
+
+	</div>
+
+	<div class="row" ng-hide="!dc.decision || dc.decision.new" ng-cloak>
+		<div class="col-md-2">
+			<button class="btn btn-success btn-lg btn-pc" ng-disabled="!dc.text.length" ng-click="dc.addPros()">Плюс</button>
+		</div>
+		<div class="col-md-8">
+			<div class="form-group">
+		    <label for="addDecisionProsCons">Добавьте плюс/минус</label>
+				<input type="text" class="form-control" id="addDecisionProsCons" ng-model="dc.text">
+		  </div>
+		</div>
+		<div class="col-md-2">
+			<button class="btn btn-warning btn-lg btn-pc" ng-disabled="!dc.text.length" ng-click="dc.addCons()">Минус</button>
+		</div>
+	</div>
+	
+	<div class="row" ng-cloak>
+
+		<div class="col-md-6" ng-hide="!dc.decision || dc.decision.new">
+			<h2>Плюсы ({{dc.decision.pros|sum}})</h2>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Вес</th>
+						<th>Название</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="d in dc.decision.pros">
+						<td>
+							<input type="number" min=0 max=10 step=1 
+							ng-model="d.rate"
+							ng-class="{'bg-warning': d.rate<3, 'bg-info': d.rate>=3 && d.rate<7, 'bg-success': d.rate>=7}"
+							>	
+						</td>
+						<td>{{d.title}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 
 
+		<div class="col-md-6" ng-hide="!dc.decision || dc.decision.new">
+			<h2>Минусы ({{dc.decision.cons|sum}})</h2>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Вес</th>
+						<th>Название</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="d in dc.decision.cons">
+						<td>
+							<input type="number" min=0 max=10 step=1 
+							ng-model="d.rate"
+							ng-class="{'bg-warning': d.rate<3, 'bg-info': d.rate>=3 && d.rate<7, 'bg-success': d.rate>=7}"
+							>
+    				</td>
+						<td>{{d.title}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 
-  <script src="/libs.js"></script>
-  <script src="/app.js"></script>
+	</div>
+	<div class="row">
+		<pre>{{ dc }}</pre>	
+	</div>
+
+</div>	
+	<script src="libs.js"></script>
+	<script src="app.js"></script>
 </body>
 </html>
