@@ -74,7 +74,8 @@ gulp.task('webserver', function() {
   gulp.src('dest/')
     .pipe(webserver({
       livereload: true,
-      open: true
+      open: true,
+      port: 1212
     }));
 });
 
